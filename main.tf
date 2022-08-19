@@ -1,9 +1,9 @@
-Create the VPC
+# Create the VPC
  resource "aws_vpc" "Main" {                # Creating VPC here
    cidr_block       = var.main_vpc_cidr     # Defining the CIDR block use 10.0.0.0/24 for demo
    instance_tenancy = "default"
  }
- Create Internet Gateway and attach it to VPC
+ # Create Internet Gateway and attach it to VPC
  resource "aws_internet_gateway" "IGW" {    # Creating Internet Gateway
     vpc_id =  aws_vpc.Main.id               # vpc_id will be generated after we create VPC
  }
@@ -12,12 +12,12 @@ Create the VPC
    vpc_id =  aws_vpc.Main.id
    cidr_block = "${var.public_subnets}"        # CIDR block of public subnets
  }
- Create a Private Subnet                   # Creating Private Subnets
+ # Create a Private Subnet                   # Creating Private Subnets
  resource "aws_subnet" "privatesubnets" {
    vpc_id =  aws_vpc.Main.id
    cidr_block = "${var.private_subnets}"          # CIDR block of private subnets
  }
- Route table for Public Subnet's
+ Route table for Public Subnet
  resource "aws_route_table" "PublicRT" {    # Creating RT for Public Subnet
     vpc_id =  aws_vpc.Main.id
          route {
@@ -33,7 +33,7 @@ Create the VPC
    nat_gateway_id = aws_nat_gateway.NATgw.id
    }
  }
- Route table Association with Public Subnet's
+ Route table Association with Public Subnet
  resource "aws_route_table_association" "PublicRTassociation" {
     subnet_id = aws_subnet.publicsubnets.id
     route_table_id = aws_route_table.PublicRT.id
@@ -46,7 +46,7 @@ Create the VPC
  resource "aws_eip" "nateIP" {
    vpc   = true
  }
- Creating the NAT Gateway using subnet_id and allocation_id
+ # Creating the NAT Gateway using subnet_id and allocation_id
  resource "aws_nat_gateway" "NATgw" {
    allocation_id = aws_eip.nateIP.id
    subnet_id = aws_subnet.publicsubnets.id
